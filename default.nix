@@ -27,7 +27,7 @@ let
     '';
   });
 in {
-  haskellPackages = pkgs.haskellPackages.extend (self: super:
+  haskellPackages = haskellPackages.extend (self: super:
   let
     gargoylePkg = import (pkgs.fetchFromGitHub {
       owner = "obsidiansystems";
