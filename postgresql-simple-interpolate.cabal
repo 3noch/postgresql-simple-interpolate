@@ -1,7 +1,7 @@
 name: postgresql-simple-interpolate
-version: 1.2.13
-synopsis: Interpolated SQL queries using parameterized queries via quasiquotation
-description: Interpolated SQL queries using parameterized queries via quasiquotation
+version: 0.1
+synopsis: Interpolated SQL queries via quasiquotation
+description: Interpolated SQL queries via quasiquotation
 license: BSD3
 license-file: LICENSE
 author: Elliot Cameron
@@ -29,18 +29,3 @@ library
     postgresql-simple,
     template-haskell
   ghc-options: -Wall -O2
-
--- test-suite test
---   type: exitcode-stdio-1.0
---   main-is: Spec.hs
---   hs-source-dirs:
---     test
---   build-depends:
---     base >=4.5 && <5,
---     here,
---     hspec,
---     bytestring,
---     text
---   other-modules:
---     Data.String.HereSpec
---   default-language: Haskell2010
