@@ -5,7 +5,6 @@ module Database.PostgreSQL.Simple.SqlQQ.Interpolated (isql, quoteInterpolatedSql
 
 import Language.Haskell.TH (Exp, Q, appE, listE, sigE, tupE, varE)
 import Language.Haskell.TH.Quote (QuasiQuoter (..))
-import Data.List (foldl')
 import Database.PostgreSQL.Simple.ToField (Action, toField)
 import Database.PostgreSQL.Simple.SqlQQ (sql)
 import Text.Parsec (ParseError)
@@ -48,12 +47,12 @@ isql = QuasiQuoter
   }
 
 combineParts :: [StringPart] -> (String, [Q Exp])
-combineParts = foldl' step ("", [])
+combineParts = foldr step ("", [])
   where
-    step (s, exprs) subExpr = case subExpr of
-      Lit str -> (s <> str, exprs)
-      Esc c -> (s <> [c], exprs)
-      Anti e -> (s <> "?", exprs <> [e]) -- TODO: Make this not slow
+    step subExpr (s, exprs) = case subExpr of
+      Lit str -> (str <> s, exprs)
+      Esc c -> (c : s, exprs)
+      Anti e -> ('?' : s, e : exprs)
 
 applySql :: [StringPart] -> Q Exp
 applySql parts =
