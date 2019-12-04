@@ -29,3 +29,14 @@ library
     postgresql-simple >= 0.1,
     template-haskell
   ghc-options: -Wall -O2
+
+benchmark criterion
+    hs-source-dirs: benchmarks
+    main-is: Benchmarks.hs
+    ghc-options: -O2 -Wall -rtsopts
+    build-depends: postgresql-simple-interpolate
+                 , base
+                 , criterion
+    default-language:    Haskell2010
+    type: exitcode-stdio-1.0
+    
