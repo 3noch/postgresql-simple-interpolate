@@ -1,13 +1,20 @@
 {-# LANGUAGE TemplateHaskell #-}
 
 -- | Interpolated SQL queries
-module Database.PostgreSQL.Simple.SqlQQ.Interpolated (isql, quoteInterpolatedSql) where
+module Database.PostgreSQL.Simple.SqlQQ.Interpolated
+  ( isql
+  , quoteInterpolatedSql
+  , iquery
+  , iexecute
+  , iexecute_
+  ) where
 
 import Language.Haskell.TH (Exp, Q, appE, listE, sigE, tupE, varE)
 import Language.Haskell.TH.Quote (QuasiQuoter (..))
 import Database.PostgreSQL.Simple.ToField (Action, toField)
 import Database.PostgreSQL.Simple.SqlQQ (sql)
 import Text.Parsec (ParseError)
+import Database.PostgreSQL.Simple
 
 import Database.PostgreSQL.Simple.SqlQQ.Interpolated.Parser (StringPart (..), parseInterpolated)
 
@@ -66,8 +73,21 @@ quoteInterpolatedSql :: String -> Q Exp
 quoteInterpolatedSql s = either (handleError s) applySql (parseInterpolated s)
 
 handleError :: String -> ParseError -> Q Exp
-handleError expStr parseError = error $
-  "Failed to parse interpolated expression in string: "
-    ++ expStr
-    ++ "\n"
-    ++ show parseError
+handleError expStr parseError = error $ mconcat
+  [ "Failed to parse interpolated expression in string: "
+  , expStr
+  , "\n"
+  , show parseError
+  ]
+
+-- | Invokes 'query' with arguments provided by 'isql'
+iquery :: QuasiQuoter
+iquery = isql { quoteExp = appE [| uncurry query |] . quoteInterpolatedSql }
+
+-- | Invokes 'execute' with arguments provided by 'isql'
+iexecute :: QuasiQuoter
+iexecute = isql { quoteExp = appE [| uncurry execute |] . quoteInterpolatedSql }
+
+-- | Invokes 'execute_' with arguments provided by 'isql'
+iexecute_ :: QuasiQuoter
+iexecute_ = isql { quoteExp = appE [| uncurry execute_ |] . quoteInterpolatedSql }
