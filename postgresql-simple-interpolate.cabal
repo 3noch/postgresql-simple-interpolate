@@ -1,5 +1,5 @@
 name: postgresql-simple-interpolate
-version: 0.1
+version: 0.1.1.0
 synopsis: Interpolated SQL queries via quasiquotation
 description: Interpolated SQL queries via quasiquotation
 license: BSD3
